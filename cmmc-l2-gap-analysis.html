@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC Level 2 Gap Analysis | IRONGATE Risk Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* IRONGATE CMMC L2 Gap Analysis Tool v1.0.0 */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-deep:#f3f4f6;--bg-panel:#ffffff;--bg-card:#f8f9fa;--bg-input:#ffffff;
+  --border:#d4d8de;--border-focus:#8a9ab0;
+  --text-primary:#1a2332;--text-secondary:#4a5568;--text-muted:#8494a7;
+  --accent-gold:#9e7c0a;--accent-gold-dim:#b8940f;
+  --fam-ac:#3b6d99;--fam-at:#4a7a4a;--fam-au:#6d4a7a;--fam-cm:#9e7c0a;--fam-ia:#a04828;
+  --fam-ir:#2e7070;--fam-ma:#5b6b8a;--fam-mp:#7a5a3a;--fam-ps:#4a6a4a;--fam-pe:#6a4a6a;
+  --fam-ra:#8a5a2a;--fam-ca:#3a6a8a;--fam-sc:#5a3a7a;--fam-si:#7a3a3a;
+  --status0:#c0392b;--status30:#d4850a;--status70:#4a8a3a;--status100:#1a7a5a;
+  --radius:6px;--shadow:0 1px 4px rgba(0,0,0,.08);
+  --font-main:'Manrope',system-ui,-apple-system,sans-serif;
+  --font-mono:'Source Code Pro','Fira Code',monospace;
+}
+[data-theme="dark"]{
+  --bg-deep:#0b1622;--bg-panel:#111d2e;--bg-card:#172435;--bg-input:#0e1a29;
+  --border:#243447;--border-focus:#3a5a7a;
+  --text-primary:#d8dee6;--text-secondary:#8a98a8;--text-muted:#5a6a7a;
+  --accent-gold:#c9a227;--accent-gold-dim:#8a7020;
+  --fam-ac:#5b8ab5;--fam-at:#6b946b;--fam-au:#8b6b94;--fam-cm:#c9a227;--fam-ia:#b85c38;
+  --fam-ir:#4a8a8a;--fam-ma:#7b8baa;--fam-mp:#9a7a5a;--fam-ps:#6a8a6a;--fam-pe:#8a6a8a;
+  --fam-ra:#aa7a4a;--fam-ca:#5a8aaa;--fam-sc:#7a5a9a;--fam-si:#9a5a5a;
+  --status0:#b85c5c;--status30:#b89050;--status70:#7a9a5a;--status100:#4a8a6a;
+  --shadow:0 2px 8px rgba(0,0,0,.3);
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font-main);background:var(--bg-deep);color:var(--text-primary);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--accent-gold);text-decoration:none}
+a:hover{text-decoration:underline}
+.app-header{background:var(--bg-panel);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:32px;height:32px;background:var(--accent-gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:18px;letter-spacing:-1px}
+.brand h1{font-size:1.05rem;font-weight:600;letter-spacing:-.02em}
+.brand h1 span{color:var(--accent-gold)}
+.brand-sub{font-size:.72rem;color:var(--text-secondary);font-weight:400;letter-spacing:.02em}
+.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.app-body{display:flex;flex:1;overflow:hidden}
+.sidebar{width:260px;min-width:260px;background:var(--bg-panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;height:calc(100vh - 57px);position:sticky;top:57px}
+.sidebar-section{padding:16px 16px 8px}
+.sidebar-section label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:6px;font-weight:600}
+.sidebar-section input{width:100%;padding:7px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-main);font-size:.85rem}
+.sidebar-section input:focus{outline:none;border-color:var(--border-focus)}
+.fam-nav{flex:1;padding:8px 0;overflow-y:auto}
+.fam-nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:.82rem;font-weight:500}
+.fam-nav-item:hover{background:var(--bg-card)}
+.fam-nav-item.active{background:var(--bg-card);border-left-color:var(--accent-gold)}
+.fam-badge{width:36px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.65rem;font-weight:600;color:#fff;flex-shrink:0}
+.fam-nav-item .fam-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fam-nav-item .fam-score{margin-left:auto;font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted)}
+.stats-bar{padding:16px;border-top:1px solid var(--border)}
+.stats-bar .stat-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:.78rem}
+.stats-bar .stat-label{color:var(--text-secondary)}
+.stats-bar .stat-value{font-weight:600;font-family:var(--font-mono)}
+.progress-track{height:4px;background:var(--bg-input);border-radius:2px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent-gold);border-radius:2px;transition:width .4s ease}
+.main{flex:1;overflow-y:auto;height:calc(100vh - 57px);padding:24px 28px}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:12px;margin-bottom:28px}
+.dash-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:all .15s}
+.dash-card:hover{border-color:var(--border-focus);transform:translateY(-1px)}
+.dash-card.active{border-color:var(--accent-gold)}
+.dash-card .dc-fam{font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;margin-bottom:4px}
+.dash-card .dc-name{font-size:.7rem;color:var(--text-secondary);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-card .dc-score{font-size:1.4rem;font-family:var(--font-mono);font-weight:700}
+.dash-card .dc-assessed{font-size:.65rem;color:var(--text-muted);margin-top:4px}
+.dash-card .dc-bar{height:3px;background:var(--bg-input);border-radius:2px;margin-top:8px;overflow:hidden}
+.dash-card .dc-bar-fill{height:100%;border-radius:2px;transition:width .4s}
+.fam-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.fam-header .fam-badge-lg{width:48px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.8rem;font-weight:700;color:#fff}
+.fam-header h2{font-size:1.25rem;font-weight:700;letter-spacing:-.02em}
+.fam-header .fam-desc{font-size:.82rem;color:var(--text-secondary);margin-top:2px}
+.fam-score-display{margin-left:auto;text-align:right}
+.fam-score-display .score-num{font-size:1.5rem;font-family:var(--font-mono);font-weight:700}
+.fam-score-display .score-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+.fam-actions{display:flex;gap:6px;margin-bottom:16px}
+.ctrl-section{margin-bottom:16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.ctrl-row{display:grid;grid-template-columns:90px 1fr 180px 60px;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:start;font-size:.82rem;transition:background .1s}
+.ctrl-row:last-child{border-bottom:none}
+.ctrl-row:hover{background:rgba(0,0,0,.02)}
+[data-theme="dark"] .ctrl-row:hover{background:rgba(255,255,255,.02)}
+.ctrl-id{font-family:var(--font-mono);font-weight:600;color:var(--text-secondary);padding-top:4px;font-size:.78rem}
+.ctrl-desc{color:var(--text-primary);line-height:1.45;padding-top:3px}
+.ctrl-detail-toggle{font-size:.72rem;color:var(--accent-gold);cursor:pointer;margin-top:4px;display:inline-block}
+.ctrl-detail-toggle:hover{text-decoration:underline}
+.ctrl-details{display:none;margin-top:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:.78rem}
+.ctrl-details.visible{display:block}
+.ctrl-details label{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:4px;margin-top:10px;font-weight:600}
+.ctrl-details label:first-child{margin-top:0}
+.ctrl-details textarea,.ctrl-details input[type="text"]{width:100%;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-main);font-size:.78rem;resize:vertical}
+.ctrl-details textarea{min-height:40px;max-height:120px;line-height:1.4}
+.ctrl-details textarea::placeholder,.ctrl-details input::placeholder{color:var(--text-muted)}
+.ctrl-details textarea:focus,.ctrl-details input:focus{outline:none;border-color:var(--border-focus)}
+.ctrl-status select{width:100%;min-width:170px;padding:6px 26px 6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-main);font-size:.8rem;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%234a5568' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.ctrl-status select:focus{outline:none;border-color:var(--border-focus)}
+[data-theme="dark"] .ctrl-status select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%235a6a7a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")}
+.ctrl-status select.s-not{border-left:3px solid var(--status0)}
+.ctrl-status select.s-partial{border-left:3px solid var(--status30)}
+.ctrl-status select.s-largely{border-left:3px solid var(--status70)}
+.ctrl-status select.s-full{border-left:3px solid var(--status100)}
+.ctrl-pts{text-align:center;font-family:var(--font-mono);font-size:.72rem;font-weight:600;padding-top:6px}
+.pt-badge{display:inline-block;padding:2px 8px;border-radius:10px}
+.pt-5{background:rgba(160,72,40,.12);color:var(--fam-ia)}
+.pt-3{background:rgba(158,124,10,.12);color:var(--accent-gold)}
+.pt-1{background:rgba(59,109,153,.12);color:var(--fam-ac)}
+[data-theme="dark"] .pt-5{background:rgba(184,92,56,.15)}
+[data-theme="dark"] .pt-3{background:rgba(201,162,39,.15)}
+[data-theme="dark"] .pt-1{background:rgba(91,138,181,.15)}
+.score-na{color:var(--text-muted)}
+.score-low{color:var(--status0)}
+.score-mid{color:var(--status30)}
+.score-good{color:var(--status70)}
+.score-high{color:var(--status100)}
+.btn{padding:7px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-family:var(--font-main);font-size:.78rem;cursor:pointer;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{background:var(--bg-input);border-color:var(--border-focus)}
+.btn-primary{background:var(--accent-gold);color:#fff;border-color:var(--accent-gold);font-weight:600}
+.btn-primary:hover{background:#b8940f;border-color:#b8940f}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#theme-toggle .icon-sun{display:none}
+#theme-toggle .icon-moon{display:block}
+[data-theme="dark"] #theme-toggle .icon-sun{display:block}
+[data-theme="dark"] #theme-toggle .icon-moon{display:none}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.visible{display:flex}
+.modal{background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:24px;max-width:700px;width:90%;box-shadow:var(--shadow);max-height:85vh;overflow-y:auto}
+.modal h3{font-size:1rem;margin-bottom:12px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.app-footer{text-align:center;padding:16px 24px;border-top:1px solid var(--border);background:var(--bg-panel);font-size:.7rem;color:var(--text-muted);line-height:1.7}
+.app-footer a{color:var(--accent-gold-dim)}
+@media(max-width:1200px){.ctrl-row{grid-template-columns:90px 1fr;gap:8px}.ctrl-status{grid-column:1/-1}.ctrl-pts{text-align:left}}
+@media(max-width:860px){.sidebar{display:none}.dashboard{grid-template-columns:repeat(3,1fr)}.ctrl-row{grid-template-columns:1fr;gap:6px}.ctrl-id{font-size:.75rem}}
+@media(max-width:600px){.dashboard{grid-template-columns:repeat(2,1fr)}.main{padding:16px}.fam-header{flex-wrap:wrap}.fam-header h2{font-size:1.1rem}.fam-score-display{width:100%;text-align:left;margin-top:8px}}
+@media print{.app-header,.sidebar,.header-actions,.btn,.fam-actions,.ctrl-detail-toggle,.ctrl-details{display:none!important}.main{height:auto;overflow:visible;padding:0}body{background:#fff;color:#000;font-size:11px}.fam-header,.ctrl-row{border-color:#d0d0d0}.ctrl-row{page-break-inside:avoid}.ctrl-section{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-icon">IR</div>
+    <div>
+      <h1><span>IRONGATE</span> Risk Partners</h1>
+      <div class="brand-sub">CMMC Level 2 Gap Analysis &mdash; 110 NIST SP 800-171 Rev 2 Controls</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn" onclick="toggleTheme()" id="theme-toggle" title="Toggle light/dark theme">
+      <svg viewBox="0 0 24 24" class="icon-sun"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg viewBox="0 0 24 24" class="icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button class="btn" onclick="loadAssessment()" title="Load saved assessment">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Load
+    </button>
+    <button class="btn" onclick="saveAssessment()" title="Save assessment to file">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Save
+    </button>
+    <button class="btn" onclick="exportCSV()" title="Export to CSV">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+      CSV
+    </button>
+    <button class="btn btn-primary" onclick="showSummary()" title="View scoring summary">Summary</button>
+    <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileLoad(event)">
+  </div>
+</header>
+<div class="app-body">
+  <nav class="sidebar">
+    <div class="sidebar-section"><label>Organization</label><input type="text" id="org-name" placeholder="Organization name" onchange="updateMeta()"></div>
+    <div class="sidebar-section"><label>Assessor</label><input type="text" id="assessor" placeholder="Assessor name" onchange="updateMeta()"></div>
+    <div class="sidebar-section"><label>Date</label><input type="date" id="assess-date" onchange="updateMeta()"></div>
+    <div class="fam-nav" id="fam-nav"></div>
+    <div class="stats-bar">
+      <div class="stat-row"><span class="stat-label">Points</span><span class="stat-value" id="stat-score">0 / 110</span></div>
+      <div class="stat-row"><span class="stat-label">Threshold</span><span class="stat-value" id="stat-threshold">88 pts (80%)</span></div>
+      <div class="stat-row"><span class="stat-label">Complete</span><span class="stat-value" id="stat-full">0 / 110</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
+    </div>
+  </nav>
+  <main class="main" id="main-content"></main>
+</div>
+<footer class="app-footer">
+  CMMC Level 2 &mdash; Based on NIST SP 800-171 Rev 2 (110 controls, 14 families) &mdash; Assessment methodology per NIST SP 800-171A<br>
+  CMMC&reg; is a registered trademark of the Department of Defense. NIST&reg; is a trademark of the National Institute of Standards and Technology.<br>
+  Built by <a href="https://github.com/irongate-risk" target="_blank">IRONGATE Risk Partners LLC</a> &mdash; v1.0.0
+</footer>
+<div class="modal-overlay" id="summary-modal">
+  <div class="modal"><h3>CMMC Level 2 Gap Analysis Summary</h3><div id="summary-body"></div><div class="modal-actions"><button class="btn" onclick="closeSummary()">Close</button><button class="btn" onclick="window.print()">Print</button></div></div>
+</div>
+<script>
+const CMMC={families:[
+{id:"AC",fam:"3.1",name:"Access Control",color:"var(--fam-ac)",controls:[
+{id:"3.1.1",t:"Limit system access to authorized users, processes acting on behalf of authorized users, and devices (including other systems).",p:5},
+{id:"3.1.2",t:"Limit system access to the types of transactions and functions that authorized users are permitted to execute.",p:5},
+{id:"3.1.3",t:"Control the flow of CUI in accordance with approved authorizations.",p:5},
+{id:"3.1.4",t:"Separate the duties of individuals to reduce the risk of malevolent activity without collusion.",p:1},
+{id:"3.1.5",t:"Employ the principle of least privilege, including for specific security functions and privileged accounts.",p:5},
+{id:"3.1.6",t:"Use non-privileged accounts or roles when accessing nonsecurity functions.",p:1},
+{id:"3.1.7",t:"Prevent non-privileged users from executing privileged functions and capture the execution of such functions in audit logs.",p:3},
+{id:"3.1.8",t:"Limit unsuccessful logon attempts.",p:1},
+{id:"3.1.9",t:"Provide privacy and security notices consistent with applicable CUI rules.",p:1},
+{id:"3.1.10",t:"Use session lock with pattern-hiding displays to prevent access and viewing of data after a period of inactivity.",p:1},
+{id:"3.1.11",t:"Terminate (automatically) a user session after a defined condition.",p:1},
+{id:"3.1.12",t:"Monitor and control remote access sessions.",p:5},
+{id:"3.1.13",t:"Employ cryptographic mechanisms to protect the confidentiality of remote access sessions.",p:5},
+{id:"3.1.14",t:"Route remote access via managed access control points.",p:3},
+{id:"3.1.15",t:"Authorize remote execution of privileged commands and remote access to security-relevant information.",p:3},
+{id:"3.1.16",t:"Authorize wireless access prior to allowing such connections.",p:1},
+{id:"3.1.17",t:"Protect wireless access using authentication and encryption.",p:3},
+{id:"3.1.18",t:"Control connection of mobile devices.",p:1},
+{id:"3.1.19",t:"Encrypt CUI on mobile devices and mobile computing platforms.",p:5},
+{id:"3.1.20",t:"Verify and control/limit connections to and use of external systems.",p:1},
+{id:"3.1.21",t:"Limit use of portable storage devices on external systems.",p:1},
+{id:"3.1.22",t:"Control CUI posted or processed on publicly accessible systems.",p:5}]},
+{id:"AT",fam:"3.2",name:"Awareness & Training",color:"var(--fam-at)",controls:[
+{id:"3.2.1",t:"Ensure that managers, systems administrators, and users of organizational systems are made aware of the security risks associated with their activities and of the applicable policies, standards, and procedures related to the security of those systems.",p:1},
+{id:"3.2.2",t:"Ensure that personnel are trained to carry out their assigned information security-related duties and responsibilities.",p:1},
+{id:"3.2.3",t:"Provide security awareness training on recognizing and reporting potential indicators of insider threat.",p:1}]},
+{id:"AU",fam:"3.3",name:"Audit & Accountability",color:"var(--fam-au)",controls:[
+{id:"3.3.1",t:"Create and retain system audit logs and records to the extent needed to enable the monitoring, analysis, investigation, and reporting of unlawful or unauthorized system activity.",p:5},
+{id:"3.3.2",t:"Ensure that the actions of individual system users can be uniquely traced to those users so they can be held accountable for their actions.",p:5},
+{id:"3.3.3",t:"Review and update logged events.",p:1},{id:"3.3.4",t:"Alert in the event of an audit logging process failure.",p:1},
+{id:"3.3.5",t:"Correlate audit record review, analysis, and reporting processes for investigation and response to indications of unlawful, unauthorized, suspicious, or unusual activity.",p:3},
+{id:"3.3.6",t:"Provide audit record reduction and report generation to support on-demand analysis and reporting.",p:1},
+{id:"3.3.7",t:"Provide a system capability that compares and synchronizes internal system clocks with an authoritative source to generate time stamps for audit records.",p:1},
+{id:"3.3.8",t:"Protect audit information and audit logging tools from unauthorized access, modification, and deletion.",p:3},
+{id:"3.3.9",t:"Limit management of audit logging functionality to a subset of privileged users.",p:1}]},
+{id:"CM",fam:"3.4",name:"Configuration Management",color:"var(--fam-cm)",controls:[
+{id:"3.4.1",t:"Establish and maintain baseline configurations and inventories of organizational systems (including hardware, software, firmware, and documentation) throughout the respective system development life cycles.",p:3},
+{id:"3.4.2",t:"Establish and enforce security configuration settings for information technology products employed in organizational systems.",p:3},
+{id:"3.4.3",t:"Track, review, approve or disapprove, and log changes to organizational systems.",p:1},
+{id:"3.4.4",t:"Analyze the security impact of changes prior to implementation.",p:1},
+{id:"3.4.5",t:"Define, document, approve, and enforce physical and logical access restrictions associated with changes to organizational systems.",p:1},
+{id:"3.4.6",t:"Employ the principle of least functionality by configuring organizational systems to provide only essential capabilities.",p:3},
+{id:"3.4.7",t:"Restrict, disable, or prevent the use of nonessential programs, functions, ports, protocols, and services.",p:3},
+{id:"3.4.8",t:"Apply deny-by-exception (blacklisting) policy to prevent the use of unauthorized software or deny-all, permit-by-exception (whitelisting) policy to allow the execution of authorized software.",p:3},
+{id:"3.4.9",t:"Control and monitor user-installed software.",p:1}]},
+{id:"IA",fam:"3.5",name:"Identification & Authentication",color:"var(--fam-ia)",controls:[
+{id:"3.5.1",t:"Identify system users, processes acting on behalf of users, and devices.",p:3},
+{id:"3.5.2",t:"Authenticate (or verify) the identities of users, processes, or devices, as a prerequisite to allowing access to organizational systems.",p:3},
+{id:"3.5.3",t:"Use multifactor authentication for local and network access to privileged accounts and for network access to non-privileged accounts.",p:5},
+{id:"3.5.4",t:"Employ replay-resistant authentication mechanisms for network access to privileged and non-privileged accounts.",p:3},
+{id:"3.5.5",t:"Prevent reuse of identifiers for a defined period.",p:1},
+{id:"3.5.6",t:"Disable identifiers after a defined period of inactivity.",p:1},
+{id:"3.5.7",t:"Enforce a minimum password complexity and change of characters when new passwords are created.",p:1},
+{id:"3.5.8",t:"Prohibit password reuse for a specified number of generations.",p:1},
+{id:"3.5.9",t:"Allow temporary password use for system logons with an immediate change to a permanent password.",p:1},
+{id:"3.5.10",t:"Store and transmit only cryptographically-protected passwords.",p:3},
+{id:"3.5.11",t:"Obscure feedback of authentication information.",p:1}]},
+{id:"IR",fam:"3.6",name:"Incident Response",color:"var(--fam-ir)",controls:[
+{id:"3.6.1",t:"Establish an operational incident-handling capability for organizational systems that includes preparation, detection, analysis, containment, recovery, and user response activities.",p:3},
+{id:"3.6.2",t:"Track, document, and report incidents to designated officials and/or authorities both internal and external to the organization.",p:1},
+{id:"3.6.3",t:"Test the organizational incident response capability.",p:1}]},
+{id:"MA",fam:"3.7",name:"Maintenance",color:"var(--fam-ma)",controls:[
+{id:"3.7.1",t:"Perform maintenance on organizational systems.",p:1},
+{id:"3.7.2",t:"Provide controls on the tools, techniques, mechanisms, and personnel used to conduct system maintenance.",p:1},
+{id:"3.7.3",t:"Ensure equipment removed for off-site maintenance is sanitized of any CUI.",p:1},
+{id:"3.7.4",t:"Check media containing diagnostic and test programs for malicious code before the media are used in organizational systems.",p:1},
+{id:"3.7.5",t:"Require multifactor authentication to establish nonlocal maintenance sessions via external network connections and terminate such connections when nonlocal maintenance is complete.",p:5},
+{id:"3.7.6",t:"Supervise the maintenance activities of maintenance personnel without required access authorization.",p:1}]},
+{id:"MP",fam:"3.8",name:"Media Protection",color:"var(--fam-mp)",controls:[
+{id:"3.8.1",t:"Protect (i.e., physically control and securely store) system media containing CUI, both paper and digital.",p:3},
+{id:"3.8.2",t:"Limit access to CUI on system media to authorized users.",p:1},
+{id:"3.8.3",t:"Sanitize or destroy system media containing CUI before disposal or release for reuse.",p:3},
+{id:"3.8.4",t:"Mark media with necessary CUI markings and distribution limitations.",p:1},
+{id:"3.8.5",t:"Control access to media containing CUI and maintain accountability for media during transport outside of controlled areas.",p:1},
+{id:"3.8.6",t:"Implement cryptographic mechanisms to protect the confidentiality of CUI stored on digital media during transport unless otherwise protected by alternative physical safeguards.",p:3},
+{id:"3.8.7",t:"Control the use of removable media on system components.",p:1},
+{id:"3.8.8",t:"Prohibit the use of portable storage devices when such devices have no identifiable owner.",p:1},
+{id:"3.8.9",t:"Protect the confidentiality of backup CUI at storage locations.",p:3}]},
+{id:"PS",fam:"3.9",name:"Personnel Security",color:"var(--fam-ps)",controls:[
+{id:"3.9.1",t:"Screen individuals prior to authorizing access to organizational systems containing CUI.",p:1},
+{id:"3.9.2",t:"Ensure that organizational systems containing CUI are protected during and after personnel actions such as terminations and transfers.",p:1}]},
+{id:"PE",fam:"3.10",name:"Physical Protection",color:"var(--fam-pe)",controls:[
+{id:"3.10.1",t:"Limit physical access to organizational systems, equipment, and the respective operating environments to authorized individuals.",p:3},
+{id:"3.10.2",t:"Protect and monitor the physical facility and support infrastructure for organizational systems.",p:1},
+{id:"3.10.3",t:"Escort visitors and monitor visitor activity.",p:1},
+{id:"3.10.4",t:"Maintain audit logs of physical access.",p:1},
+{id:"3.10.5",t:"Control and manage physical access devices.",p:1},
+{id:"3.10.6",t:"Enforce safeguarding measures for CUI at alternate work sites.",p:1}]},
+{id:"RA",fam:"3.11",name:"Risk Assessment",color:"var(--fam-ra)",controls:[
+{id:"3.11.1",t:"Periodically assess the risk to organizational operations (including mission, functions, image, or reputation), organizational assets, and individuals, resulting from the operation of organizational systems and the associated processing, storage, or transmission of CUI.",p:3},
+{id:"3.11.2",t:"Scan for vulnerabilities in organizational systems and applications periodically and when new vulnerabilities affecting those systems and applications are identified.",p:5},
+{id:"3.11.3",t:"Remediate vulnerabilities in accordance with risk assessments.",p:5}]},
+{id:"CA",fam:"3.12",name:"Security Assessment",color:"var(--fam-ca)",controls:[
+{id:"3.12.1",t:"Periodically assess the security controls in organizational systems to determine if the controls are effective in their application.",p:3},
+{id:"3.12.2",t:"Develop and implement plans of action designed to correct deficiencies and reduce or eliminate vulnerabilities in organizational systems.",p:3},
+{id:"3.12.3",t:"Monitor security controls on an ongoing basis to ensure the continued effectiveness of the controls.",p:3},
+{id:"3.12.4",t:"Develop, document, and periodically update system security plans that describe system boundaries, system environments of operation, how security requirements are implemented, and the relationships with or connections to other systems.",p:5}]},
+{id:"SC",fam:"3.13",name:"System & Comm. Protection",color:"var(--fam-sc)",controls:[
+{id:"3.13.1",t:"Monitor, control, and protect communications (i.e., information transmitted or received by organizational systems) at the external boundaries and key internal boundaries of organizational systems.",p:5},
+{id:"3.13.2",t:"Employ architectural designs, software development techniques, and systems engineering principles that promote effective information security within organizational systems.",p:3},
+{id:"3.13.3",t:"Separate user functionality from system management functionality.",p:1},
+{id:"3.13.4",t:"Prevent unauthorized and unintended information transfer via shared system resources.",p:1},
+{id:"3.13.5",t:"Implement subnetworks for publicly accessible system components that are physically or logically separated from internal networks.",p:5},
+{id:"3.13.6",t:"Deny network communications traffic by default and allow network communications traffic by exception (i.e., deny all, permit by exception).",p:5},
+{id:"3.13.7",t:"Prevent remote devices from simultaneously establishing non-remote connections with organizational systems and communicating via some other connection to resources in external networks (i.e., split tunneling).",p:3},
+{id:"3.13.8",t:"Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI during transmission unless otherwise protected by alternative physical safeguards.",p:5},
+{id:"3.13.9",t:"Terminate network connections associated with communications sessions at the end of the sessions or after a defined period of inactivity.",p:1},
+{id:"3.13.10",t:"Establish and manage cryptographic keys for cryptography employed in organizational systems.",p:3},
+{id:"3.13.11",t:"Employ FIPS-validated cryptography when used to protect the confidentiality of CUI.",p:5},
+{id:"3.13.12",t:"Prohibit remote activation of collaborative computing devices and provide indication of devices in use to users present at the device.",p:1},
+{id:"3.13.13",t:"Control and monitor the use of mobile code.",p:1},
+{id:"3.13.14",t:"Control and monitor the use of Voice over Internet Protocol (VoIP) technologies.",p:1},
+{id:"3.13.15",t:"Protect the authenticity of communications sessions.",p:3},
+{id:"3.13.16",t:"Protect the confidentiality of CUI at rest.",p:5}]},
+{id:"SI",fam:"3.14",name:"System & Info Integrity",color:"var(--fam-si)",controls:[
+{id:"3.14.1",t:"Identify, report, and correct system flaws in a timely manner.",p:5},
+{id:"3.14.2",t:"Provide protection from malicious code at designated locations within organizational systems.",p:1},
+{id:"3.14.3",t:"Monitor system security alerts and advisories and take action in response.",p:1},
+{id:"3.14.4",t:"Update malicious code protection mechanisms when new releases are available.",p:1},
+{id:"3.14.5",t:"Perform periodic scans of organizational systems and real-time scans of files from external sources as files are downloaded, opened, or executed.",p:1},
+{id:"3.14.6",t:"Monitor organizational systems, including inbound and outbound communications traffic, to detect attacks and indicators of potential attacks.",p:5},
+{id:"3.14.7",t:"Identify unauthorized use of organizational systems.",p:5}]}
+]};
+const allCtrlIds=[];CMMC.families.forEach(f=>f.controls.forEach(c=>allCtrlIds.push(c.id)));
+const state={activeFam:"AC",statuses:{},notes:{},evidence:{},poam:{},meta:{org:"",assessor:"",date:""}};
+function ctrlEarned(c){const s=state.statuses[c.id]||0;return Math.round(c.p*(s/100))}
+function famScore(fid){const f=CMMC.families.find(x=>x.id===fid);if(!f)return 0;let e=0,m=0;f.controls.forEach(c=>{e+=ctrlEarned(c);m+=c.p});return m>0?Math.round(e/m*100):0}
+function famPoints(fid){const f=CMMC.families.find(x=>x.id===fid);if(!f)return{earned:0,max:0,full:0};let e=0,m=0,fl=0;f.controls.forEach(c=>{e+=ctrlEarned(c);m+=c.p;if((state.statuses[c.id]||0)===100)fl++});return{earned:e,max:m,full:fl}}
+function totalScore(){let e=0,m=0,fl=0,f5t=0,f5m=0;CMMC.families.forEach(f=>f.controls.forEach(c=>{e+=ctrlEarned(c);m+=c.p;if((state.statuses[c.id]||0)===100)fl++;if(c.p===5){f5t++;if((state.statuses[c.id]||0)===100)f5m++}}));return{earned:e,max:m,full:fl,fivePtTotal:f5t,fivePtMet:f5m,certReady:e>=88&&f5m===f5t}}
+function scoreClass(p){if(p<=0)return"score-na";if(p<40)return"score-low";if(p<70)return"score-mid";if(p<90)return"score-good";return"score-high"}
+function statusLabel(v){return{0:"Not Implemented",30:"Partially Implemented",70:"Largely Implemented",100:"Fully Implemented"}[v]||"Not Implemented"}
+function statusClass(v){return{0:"s-not",30:"s-partial",70:"s-largely",100:"s-full"}[v]||"s-not"}
+function renderNav(){let h="";CMMC.families.forEach(f=>{const p=famScore(f.id);const cls=f.id===state.activeFam?" active":"";const sc=p>0?p+"%":"\u2014";h+=`<div class="fam-nav-item${cls}" onclick="switchFam('${f.id}')"><div class="fam-badge" style="background:${f.color}">${f.id}</div><span class="fam-name">${f.fam} ${f.name}</span><span class="fam-score ${scoreClass(p)}">${sc}</span></div>`});document.getElementById("fam-nav").innerHTML=h}
+function renderMain(){const fam=CMMC.families.find(f=>f.id===state.activeFam);if(!fam)return;const fp=famPoints(fam.id);const pct=famScore(fam.id);
+let h=`<div class="dashboard">`;CMMC.families.forEach(f=>{const p=famPoints(f.id);const pc=famScore(f.id);const act=f.id===state.activeFam?" active":"";h+=`<div class="dash-card${act}" onclick="switchFam('${f.id}')"><div class="dc-fam" style="color:${f.color}">${f.id}</div><div class="dc-name">${f.name}</div><div class="dc-score ${scoreClass(pc)}">${pc>0?pc+"%":"\u2014"}</div><div class="dc-assessed">${p.full}/${f.controls.length} complete</div><div class="dc-bar"><div class="dc-bar-fill" style="width:${pc}%;background:${f.color}"></div></div></div>`});h+=`</div>`;
+h+=`<div class="fam-header"><div class="fam-badge-lg" style="background:${fam.color}">${fam.id}</div><div><h2>${fam.fam} ${fam.name}</h2><div class="fam-desc">${fam.controls.length} controls \u2022 ${fp.earned} / ${fp.max} points earned</div></div><div class="fam-score-display"><div class="score-num ${scoreClass(pct)}">${pct>0?pct+"%":"\u2014"}</div><div class="score-label">Family Score</div></div></div>`;
+h+=`<div class="fam-actions"><button class="btn" onclick="expandAllCtrls()">Expand All</button><button class="btn" onclick="collapseAllCtrls()">Collapse All</button></div>`;
+h+=`<div class="ctrl-section">`;fam.controls.forEach(c=>{const s=state.statuses[c.id]||0;const ptCls=c.p===5?"pt-5":c.p===3?"pt-3":"pt-1";const ev=state.evidence[c.id]||"";const nt=state.notes[c.id]||"";const pm=state.poam[c.id]||"";
+h+=`<div class="ctrl-row"><div class="ctrl-id">${c.id}</div><div><div class="ctrl-desc">${c.t}</div><span class="ctrl-detail-toggle" onclick="toggleDetail('${c.id}')">Evidence &amp; Notes &#9662;</span><div class="ctrl-details" id="det-${c.id}"><label>Evidence Location</label><input type="text" placeholder="e.g., SharePoint/Policies/AC-001.pdf" value="${esc(ev)}" data-ctrl="${c.id}" data-field="evidence" onchange="setField(this)"><label>Assessment Notes</label><textarea placeholder="Observations, findings, gaps..." data-ctrl="${c.id}" data-field="notes" onchange="setField(this)">${esc(nt)}</textarea><label>POA&amp;M Reference</label><input type="text" placeholder="e.g., POAM-001" value="${esc(pm)}" data-ctrl="${c.id}" data-field="poam" onchange="setField(this)"></div></div><div class="ctrl-status"><select class="${statusClass(s)}" data-ctrl="${c.id}" onchange="setStatus(this)"><option value="0"${s===0?" selected":""}>Not Implemented</option><option value="30"${s===30?" selected":""}>Partially Implemented</option><option value="70"${s===70?" selected":""}>Largely Implemented</option><option value="100"${s===100?" selected":""}>Fully Implemented</option></select></div><div class="ctrl-pts"><span class="pt-badge ${ptCls}">${c.p}pt</span></div></div>`});
+h+=`</div>`;document.getElementById("main-content").innerHTML=h}
+function updateStats(){const ts=totalScore();document.getElementById("stat-score").textContent=ts.earned+" / "+ts.max;document.getElementById("stat-score").className="stat-value "+scoreClass(Math.round(ts.earned/ts.max*100));document.getElementById("stat-full").textContent=ts.full+" / 110";document.getElementById("progress-bar").style.width=Math.round(ts.earned/ts.max*100)+"%"}
+function refreshAll(){renderNav();renderMain();updateStats()}
+function toggleTheme(){const h=document.documentElement;const c=h.getAttribute("data-theme");const n=c==="dark"?"light":"dark";h.setAttribute("data-theme",n);localStorage.setItem("irongate-cmmc-theme",n)}
+function loadTheme(){const s=localStorage.getItem("irongate-cmmc-theme");if(s)document.documentElement.setAttribute("data-theme",s)}
+function switchFam(fid){state.activeFam=fid;refreshAll();document.getElementById("main-content").scrollTop=0}
+function setStatus(el){const cid=el.getAttribute("data-ctrl");const v=parseInt(el.value,10);state.statuses[cid]=v;el.className=statusClass(v);renderNav();updateStats();
+const pct=famScore(state.activeFam);const se=document.querySelector(".fam-score-display .score-num");if(se){se.textContent=pct>0?pct+"%":"\u2014";se.className="score-num "+scoreClass(pct)}
+const fp=famPoints(state.activeFam);const de=document.querySelector(".fam-desc");const fam=CMMC.families.find(f=>f.id===state.activeFam);if(de&&fam)de.textContent=fam.controls.length+" controls \u2022 "+fp.earned+" / "+fp.max+" points earned";
+const cards=document.querySelectorAll(".dash-card");CMMC.families.forEach((f,i)=>{if(cards[i]){const p=famPoints(f.id);const pc=famScore(f.id);cards[i].querySelector(".dc-score").textContent=pc>0?pc+"%":"\u2014";cards[i].querySelector(".dc-score").className="dc-score "+scoreClass(pc);cards[i].querySelector(".dc-assessed").textContent=p.full+"/"+f.controls.length+" complete";cards[i].querySelector(".dc-bar-fill").style.width=pc+"%"}})}
+function setField(el){state[el.getAttribute("data-field")][el.getAttribute("data-ctrl")]=el.value}
+function toggleDetail(cid){document.getElementById("det-"+cid).classList.toggle("visible")}
+function expandAllCtrls(){document.querySelectorAll(".ctrl-details").forEach(d=>d.classList.add("visible"))}
+function collapseAllCtrls(){document.querySelectorAll(".ctrl-details").forEach(d=>d.classList.remove("visible"))}
+function updateMeta(){state.meta.org=document.getElementById("org-name").value;state.meta.assessor=document.getElementById("assessor").value;state.meta.date=document.getElementById("assess-date").value}
+function saveAssessment(){updateMeta();const d={format:"irongate-cmmc-l2-assessment",version:"1.0.0",framework:"CMMC Level 2 (NIST SP 800-171 Rev 2)",savedAt:new Date().toISOString(),meta:state.meta,statuses:state.statuses,notes:state.notes,evidence:state.evidence,poam:state.poam};const b=new Blob([JSON.stringify(d,null,2)],{type:"application/json"});const u=URL.createObjectURL(b);const a=document.createElement("a");const o=(state.meta.org||"assessment").replace(/[^a-z0-9]+/gi,"-").toLowerCase();a.href=u;a.download=`cmmc-l2-${o}-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(u)}
+function loadAssessment(){document.getElementById("file-input").click()}
+function handleFileLoad(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(d.format!=="irongate-cmmc-l2-assessment"){alert("This file does not appear to be a valid CMMC Level 2 assessment.");return}state.statuses=d.statuses||{};state.notes=d.notes||{};state.evidence=d.evidence||{};state.poam=d.poam||{};state.meta=d.meta||{org:"",assessor:"",date:""};document.getElementById("org-name").value=state.meta.org||"";document.getElementById("assessor").value=state.meta.assessor||"";document.getElementById("assess-date").value=state.meta.date||"";refreshAll()}catch(err){alert("Error reading assessment file. Please check the file format.")}};r.readAsText(f);e.target.value=""}
+function exportCSV(){updateMeta();let csv="Family,Control ID,Control Statement,Point Value,Status,Points Earned,Evidence Location,Notes,POA&M Reference\n";CMMC.families.forEach(f=>{f.controls.forEach(c=>{const s=state.statuses[c.id]||0;const earned=ctrlEarned(c);csv+=`"${f.fam} ${f.name}","${c.id}","${c.t.replace(/"/g,'""')}",${c.p},"${statusLabel(s)}",${earned},"${(state.evidence[c.id]||"").replace(/"/g,'""')}","${(state.notes[c.id]||"").replace(/"/g,'""')}","${(state.poam[c.id]||"").replace(/"/g,'""')}"\n`})});
+csv+="\n\"--- SCORING SUMMARY ---\"\n\"Family\",\"Score %\",\"Points Earned\",\"Max Points\",\"Complete\",\"Total\"\n";CMMC.families.forEach(f=>{const fp=famPoints(f.id);const pct=famScore(f.id);csv+=`"${f.id}: ${f.name}",${pct}%,${fp.earned},${fp.max},${fp.full},${f.controls.length}\n`});const ts=totalScore();csv+=`"OVERALL",${Math.round(ts.earned/ts.max*100)}%,${ts.earned},${ts.max},${ts.full},110\n"Certification Ready","${ts.certReady?"YES":"NO"}"\n`;
+csv+=`\n"Organization","${(state.meta.org||"").replace(/"/g,'""')}"\n"Assessor","${(state.meta.assessor||"").replace(/"/g,'""')}"\n"Date","${state.meta.date||""}"\n`;
+const b=new Blob([csv],{type:"text/csv;charset=utf-8;"});const u=URL.createObjectURL(b);const a=document.createElement("a");const o=(state.meta.org||"assessment").replace(/[^a-z0-9]+/gi,"-").toLowerCase();a.href=u;a.download=`cmmc-l2-${o}-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(u)}
+function showSummary(){const body=document.getElementById("summary-body");const ts=totalScore();const op=Math.round(ts.earned/ts.max*100);
+let h=`<div style="margin-bottom:14px;font-size:.82rem;color:var(--text-secondary)">${state.meta.org?'<strong>'+esc(state.meta.org)+'</strong> &mdash; ':''}${state.meta.assessor?'Assessed by '+esc(state.meta.assessor):''}${state.meta.date?' on '+state.meta.date:''}</div>`;
+h+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"><div style="background:var(--bg-card);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:1.4rem;font-weight:700;font-family:var(--font-mono)" class="${scoreClass(op)}">${ts.earned}/${ts.max}</div><div style="font-size:.65rem;color:var(--text-muted);text-transform:uppercase">Points</div></div><div style="background:var(--bg-card);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:1.4rem;font-weight:700;font-family:var(--font-mono)" class="${scoreClass(op)}">${op}%</div><div style="font-size:.65rem;color:var(--text-muted);text-transform:uppercase">Score</div></div><div style="background:var(--bg-card);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:1.4rem;font-weight:700;font-family:var(--font-mono)" class="${ts.certReady?'score-high':'score-low'}">${ts.certReady?"YES":"NO"}</div><div style="font-size:.65rem;color:var(--text-muted);text-transform:uppercase">Cert Ready</div></div><div style="background:var(--bg-card);border-radius:var(--radius);padding:12px;text-align:center"><div style="font-size:1.4rem;font-weight:700;font-family:var(--font-mono)">${ts.fivePtMet}/${ts.fivePtTotal}</div><div style="font-size:.65rem;color:var(--text-muted);text-transform:uppercase">Critical Ctrls</div></div></div>`;
+h+=`<table style="width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:12px"><thead><tr style="border-bottom:2px solid var(--border);text-align:left"><th style="padding:6px 8px">Family</th><th style="padding:6px 8px;text-align:center">Score</th><th style="padding:6px 8px;text-align:center">Points</th><th style="padding:6px 8px;text-align:center">Complete</th></tr></thead><tbody>`;
+CMMC.families.forEach(f=>{const fp=famPoints(f.id);const pct=famScore(f.id);h+=`<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${f.color};margin-right:6px"></span>${f.id}: ${f.name}</td><td style="padding:6px 8px;text-align:center;font-family:var(--font-mono);font-weight:600" class="${scoreClass(pct)}">${pct>0?pct+"%":"\u2014"}</td><td style="padding:6px 8px;text-align:center;font-family:var(--font-mono)">${fp.earned}/${fp.max}</td><td style="padding:6px 8px;text-align:center;color:var(--text-secondary)">${fp.full}/${f.controls.length}</td></tr>`});
+h+=`<tr style="border-top:2px solid var(--border);font-weight:700"><td style="padding:8px">OVERALL</td><td style="padding:8px;text-align:center;font-family:var(--font-mono)" class="${scoreClass(op)}">${op}%</td><td style="padding:8px;text-align:center;font-family:var(--font-mono)">${ts.earned}/${ts.max}</td><td style="padding:8px;text-align:center">${ts.full}/110</td></tr></tbody></table>`;
+let cg=[];CMMC.families.forEach(f=>f.controls.forEach(c=>{if(c.p===5&&(state.statuses[c.id]||0)<100)cg.push({fam:f.id,ctrl:c})}));
+if(cg.length>0){h+=`<details style="margin-top:8px"><summary style="cursor:pointer;font-size:.78rem;color:var(--accent-gold);font-weight:600">Unmet Critical Controls (${cg.length} of ${ts.fivePtTotal})</summary><table style="width:100%;border-collapse:collapse;font-size:.75rem;margin-top:8px">`;cg.forEach(g=>{const s=state.statuses[g.ctrl.id]||0;h+=`<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 8px;font-family:var(--font-mono);color:var(--text-secondary);width:60px">${g.ctrl.id}</td><td style="padding:4px 8px">${g.ctrl.t.substring(0,80)}${g.ctrl.t.length>80?"...":""}</td><td style="padding:4px 8px;text-align:right;font-family:var(--font-mono);font-weight:600;color:var(--status0)">${statusLabel(s)}</td></tr>`});h+=`</table></details>`}
+body.innerHTML=h;document.getElementById("summary-modal").classList.add("visible")}
+function closeSummary(){document.getElementById("summary-modal").classList.remove("visible")}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+document.getElementById("summary-modal").addEventListener("click",function(e){if(e.target===this)closeSummary()});
+(function init(){loadTheme();document.getElementById("assess-date").value=new Date().toISOString().slice(0,10);state.meta.date=document.getElementById("assess-date").value;refreshAll()})();
+</script>
+</body>
+</html>
